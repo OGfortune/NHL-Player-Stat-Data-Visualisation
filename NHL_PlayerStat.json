@@ -1,0 +1,181 @@
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+  "data": {
+    "url": "https://raw.githubusercontent.com/OGfortune/info_vis/main/new_season_goals.csv",
+    "format": {"type": "csv"}
+  },
+  "title": {
+    "text": {"signal": "'NHL Players Stats: ' + stat_selection"},
+    "anchor": "middle",
+    "fontSize": 30,
+    "offset": 20
+  },
+  "vconcat": [
+    {
+      "hconcat": [
+        {
+          "width": 400,
+          "height": 400,
+          "mark": {"type": "point"},
+          "encoding": {
+            "y": {
+              "field": "stat_value",
+              "type": "quantitative",
+              "aggregate": "sum",
+              "title": {"signal": "'Total number of ' + stat_selection"}
+            },
+            "x": {
+              "field": "years_active",
+              "type": "quantitative",
+              "title": "Seasons Played",
+              "scale":  {"zero": false, "padding": 0.1}
+            },
+            "color": {
+              "field": "position",
+              "type": "nominal",
+              "title": "Position"
+            },
+            "shape": {
+              "field": "status",
+              "type": "nominal",
+              "title": "Status",
+              "scale": {
+                "domain": ["Retired", "Active"],
+                "range": ["circle", "square"]
+              }
+            },
+            "tooltip": [
+              {"field": "player", "type": "nominal", "title": "Player's Name: "},
+              {
+                "field": "stat_value",
+                "type": "quantitative",
+                "title": "Total number of goals/assists: ",
+                "aggregate": "sum"
+              },
+              {"field": "years_active", "type": "quantitative", "title": "number of seasons played: "}
+            ]
+          },
+          "transform": [
+            {"filter": {"param": "bar_selection"}},
+            {"filter": {"param": "bar2_selection"}}
+          ],
+          "params": [
+            {
+              "name": "scatter_selection",
+              "select": {"type": "interval", "encodings": ["x", "y"]}
+            },
+            {
+              "name": "bar_selection",
+              "select": {"type": "point", "encodings": ["y"]}
+            },
+            {
+              "name": "bar2_selection",
+              "select": {"type": "point", "encodings": ["x"]}
+            }
+          ]
+        },
+        {
+          "width": 100,
+          "height": 300,
+          "mark": "bar",
+          "encoding": {
+            "y": {
+              "field": "position",
+              "type": "nominal",
+              "title": "Position",
+              "sort": "-x"
+            },
+            "x": {
+              "field": "stat_value",
+              "type": "quantitative",
+              "aggregate": "sum",
+              "title": {"signal": "'Total ' + stat_selection"}
+            },
+            "color": {
+              "condition": {
+                "param": "bar_selection",
+                "field": "position",
+                "type": "nominal",
+                "selection": "bar_selection"
+              },
+              "value": "lightgrey"
+            },
+            "opacity": {
+              "condition": {"param": "bar_selection", "value": 1},
+              "value": 0.5
+            }
+          },
+          "transform": [
+            {"filter": {"param": "scatter_selection"}},
+            {"filter": {"param": "bar2_selection"}}
+          ],
+          "params": [
+            {
+              "name": "bar_selection",
+              "select": {"type": "point", "encodings": ["y"]}
+            },
+            {
+              "name": "bar2_selection",
+              "select": {"type": "point", "encodings": ["x"]}
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "width": 600,
+      "height": 100,
+      "mark": "bar",
+      "encoding": {
+        "x": {
+          "field": "years_active",
+          "type": "ordinal",
+          "title": "Seasons Played"
+        },
+        "y": {
+          "field": "stat_value",
+          "type": "quantitative",
+          "aggregate": "sum",
+          "title": {"signal": "'Total ' + stat_selection"}
+        },
+        "color": {
+          "condition": {
+            "param": "bar2_selection",
+            "field": "position",
+            "type": "nominal",
+            "selection": "bar_selection"
+          },
+          "value": "lightgrey"
+        },
+        "opacity": {
+          "condition": {"param": "bar_selection", "value": 1},
+          "value": 0.5
+        }
+      },
+      "transform": [
+        {"filter": {"param": "scatter_selection"}},
+        {"filter": {"param": "bar_selection"}}
+      ],
+      "params": [
+        {
+          "name": "bar2_selection",
+          "select": {"type": "point", "encodings": ["x"]}
+        }
+      ]
+    }
+  ],
+  "params": [
+    {
+      "name": "stat_selection",
+      "value": "goals",
+      "bind": {"input": "select", "options": ["goals", "assists"]}
+    }
+  ],
+  "transform": [
+    {
+      "calculate": "datum[stat_selection]",
+      "as": "stat_value"
+    }
+  ]
+}
+ 
