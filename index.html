@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>NHL Player Stats Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+    <style>
+      body { margin: 0; padding: 24px 16px; font-family: system-ui, sans-serif; background: #fff; color: #222; }
+      main { max-width: 900px; margin: 0 auto; }
+      p { color: #555; margin: 0 0 16px; }
+      .scroll { overflow-x: auto; max-width: 100%; }
+      footer { margin-top: 24px; font-size: 14px; color: #777; }
+      a { color: #1f6feb; }
+    </style>
+  </head>
+  <body>
+    <main>
+      <p>Switch between goals and assists with the <strong>Stat</strong> dropdown. Drag on the scatter plot to filter by seasons played; click a bar to filter by position or career length.</p>
+      <div class="scroll"><div id="vis"></div></div>
+      <footer>
+        Built with Vega-Lite by Oghenemalu Fortune Ighoiye ·
+        <a href="https://github.com/OGfortune/NHL-Player-Stat-Data-Visualisation">Source on GitHub</a>
+      </footer>
+    </main>
+    <script>
+      vegaEmbed("#vis", "NHL_PlayerStat.json", { actions: { export: true, source: true, compiled: false, editor: true } })
+        .catch(err => { document.getElementById("vis").textContent = "Could not load the chart: " + err; });
+    </script>
+  </body>
+</html>
